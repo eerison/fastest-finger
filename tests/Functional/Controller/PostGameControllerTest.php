@@ -19,13 +19,13 @@ class PostGameControllerTest extends WebTestCase
             'playerName' => 'erison-silva',
             'score' => 1.5,
         ]);
-        $game = $gameRepository->findOneByScore(1.5);
+
+        $this->assertResponseIsSuccessful();
+        [$game] = $gameRepository->findByPlayerName('erison-silva');
 
         $this->assertInstanceOf(Game::class, $game);
         $this->assertSame($game->getPlayer()->getName(), 'erison-silva');
         $this->assertSame($game->getScore(), 1.5);
-
-        $this->assertResponseIsSuccessful();
     }
 
     public function testRequiredFields(): void
@@ -90,5 +90,17 @@ class PostGameControllerTest extends WebTestCase
             }
             ',
         );
+    }
+
+    public function testAcceptOnlyPositiveScores(): void
+    {
+        $client = static::createClient();
+
+        $crawler = $client->request('POST', '/api/games', [
+            'score' => -0.5,
+            'playerName' => 'bar',
+        ]);
+
+        $this->assertResponseStatusCodeSame(422);
     }
 }

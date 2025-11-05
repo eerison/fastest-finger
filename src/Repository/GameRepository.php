@@ -34,6 +34,17 @@ class GameRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findByPlayerName(string $playerName): array
+    {
+        return $this->createQueryBuilder('g')
+            ->join('g.player', 'p')
+            ->where('p.name = :playerName')
+            ->setParameter('playerName', $playerName)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     public function save(Game $game): void
     {
         $this->getEntityManager()->persist($game);

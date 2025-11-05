@@ -13,6 +13,7 @@ class GameInput
         public readonly string $playerName,
 
         #[Assert\NotBlank]
+        #[Assert\PositiveOrZero]
         public readonly float $score,
     ) {
     }
